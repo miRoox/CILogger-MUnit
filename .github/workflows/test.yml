@@ -6,6 +6,12 @@ on:
       - LICENSE
       - .editorconfig
       - .gitignore
+  pull_request:
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - .editorconfig
+      - .gitignore
 jobs:
   example:
     runs-on: ubuntu-latest
