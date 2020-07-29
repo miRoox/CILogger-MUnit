@@ -44,14 +44,14 @@ CILogger[] :=
         logger /: MUnit`LogFatal[logger, msg_String] :=
           WriteString[$Output, "\n" <> msg <> "\n"];
         logger /: MUnit`LogFatal[logger, msg_String] /; $GitHubActionQ :=
-          WriteString[$Output, "\n::error::" <> msg <> "\n"];
+          WriteString[$Output, "\n::error file=<*$TestFileName*>::" <> msg <> "\n"];
         logger /: MUnit`LogSuccess[logger, (*tr*)_?MUnit`TestResultQ] :=
           WriteString[$Output, "."];
         logger /: MUnit`LogFailure[logger, tr_?MUnit`TestResultQ] :=
           Module[{msg = MUnit`TestFailureMessage[tr]},
             Which[
-              $GitHubActionQ, WriteString[$Output, TemplateApply["::error file=<*$TestFileName*>::"]],
-              True, WriteString[$Output, "!\n"]
+              $GitHubActionQ, WriteString[$Output, TemplateApply["\n::error file=<*$TestFileName*>::"]],
+              True, WriteString[$Output, "\n!\n"]
             ];
             WriteString[$Output, "Test number " <> ToString@MUnit`TestIndex[tr] <> " with TestID " <> ToString@MUnit`TestID[tr] <> " had a failure.\n"];
             WriteString[$Output, "\tInput: " <> toInputString@MUnit`TestInput[tr] <> "\n"];
@@ -64,8 +64,8 @@ CILogger[] :=
         logger /: MUnit`LogMessagesFailure[logger, tr_?MUnit`TestResultQ] :=
           Module[{msg = MUnit`TestFailureMessage[tr]},
             Which[
-              $GitHubActionQ, WriteString[$Output, TemplateApply["::warning file=<*$TestFileName*>::"]],
-              True, WriteString[$Output, "*\n"]
+              $GitHubActionQ, WriteString[$Output, TemplateApply["\n::warning file=<*$TestFileName*>::"]],
+              True, WriteString[$Output, "\n*\n"]
             ];
             WriteString[$Output, "Test number " <> ToString@MUnit`TestIndex[tr] <> " with TestID " <> ToString@MUnit`TestID[tr] <> " had a messages failure.\n"];
             WriteString[$Output, "\tInput: " <> toInputString@MUnit`TestInput[tr] <> "\n"];
@@ -76,8 +76,8 @@ CILogger[] :=
         logger /: MUnit`LogError[logger, tr_?MUnit`TestResultQ] :=
           Module[{msg = MUnit`ErrorMessage[tr]},
             Which[
-              $GitHubActionQ, WriteString[$Output, TemplateApply["::error file=<*$TestFileName*>::"]],
-              True, WriteString[$Output, "!\n"]
+              $GitHubActionQ, WriteString[$Output, TemplateApply["\n::error file=<*$TestFileName*>::"]],
+              True, WriteString[$Output, "\n!\n"]
             ];
             WriteString[$Output, "Test number " <> ToString@MUnit`TestIndex[tr] <> " with TestID " <> ToString@MUnit`TestID[tr] <> " had an error.\n"];
             If[msg =!= "", WriteString[$Output, "\n** " <> msg <> " **\n"]]
