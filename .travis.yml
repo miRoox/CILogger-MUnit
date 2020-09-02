@@ -1,0 +1,15 @@
+language: minimal
+
+dist: bionic
+
+install:
+  - wget https://account.wolfram.com/download/public/wolfram-engine/desktop/LINUX
+  - sudo bash LINUX -- -auto -verbose
+  - rm LINUX
+
+before_script:
+  - /usr/bin/wolframscript -authenticate $WOLFRAM_ID $WOLFRAM_PW
+  - /usr/bin/wolframscript -activate
+
+script:
+  - /usr/bin/wolframscript -script Example/RunTests.wls
